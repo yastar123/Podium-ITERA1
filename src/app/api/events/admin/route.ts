@@ -7,37 +7,31 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
 
-    if (!session || !session.user) {
+    if (!session || !session.user || session.user.role !== "ADMIN") {
       return NextResponse.json(
-        { error: "Unauthorized" },
+        { error: "Unauthorized - Admin access required" },
         { status: 401 }
       )
     }
 
-    const userTickets = await prisma.ticket.findMany({
-      where: {
-        userId: session.user.id
-      },
+    const events = await prisma.event.findMany({
       include: {
-        event: true,
-        user: {
+        _count: {
           select: {
-            name: true,
-            email: true,
-            nim: true
+            tickets: true
           }
         }
       },
       orderBy: {
-        issuedAt: "desc"
+        eventDate: "asc"
       }
     })
 
-    return NextResponse.json(userTickets)
+    return NextResponse.json(events)
   } catch (error) {
-    console.error("Error fetching user tickets:", error)
+    console.error("Error fetching admin events:", error)
     return NextResponse.json(
-      { error: "Failed to fetch tickets" },
+      { error: "Failed to fetch events" },
       { status: 500 }
     )
   }

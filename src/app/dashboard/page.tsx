@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { signOut } from "next-auth/react"
+import TicketQR from "@/components/ticket-qr"
 
 interface Event {
   id: string
@@ -29,6 +30,7 @@ export default function StudentDashboard() {
   const [events, setEvents] = useState<Event[]>([])
   const [userTickets, setUserTickets] = useState<Ticket[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null)
 
   useEffect(() => {
     if (status === "loading") return
@@ -147,7 +149,10 @@ export default function StudentDashboard() {
                     <p><strong>Tanggal:</strong> {new Date(ticket.event.eventDate).toLocaleDateString("id-ID")}</p>
                     <p><strong>Diklaim:</strong> {new Date(ticket.issuedAt).toLocaleDateString("id-ID")}</p>
                   </div>
-                  <button className="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                  <button 
+                    onClick={() => setSelectedTicket(ticket)}
+                    className="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
                     Lihat QR Code
                   </button>
                 </div>
@@ -201,6 +206,14 @@ export default function StudentDashboard() {
           )}
         </div>
       </div>
+      
+      {/* QR Code Modal */}
+      {selectedTicket && (
+        <TicketQR
+          ticket={selectedTicket}
+          onClose={() => setSelectedTicket(null)}
+        />
+      )}
     </div>
   )
 }

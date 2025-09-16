@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -71,5 +70,7 @@ model Ticket {
   eventId      String
   event        Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
+  // Prevent duplicate tickets per user per event
+  @@unique([userId, eventId])
   @@map("tickets")
 }

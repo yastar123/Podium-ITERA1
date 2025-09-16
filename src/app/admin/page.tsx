@@ -55,9 +55,8 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     try {
-      // For now, we'll just fetch events
-      // TODO: Create admin-specific endpoints
-      const eventsRes = await fetch("/api/events")
+      // Fetch admin events with ticket counts
+      const eventsRes = await fetch("/api/events/admin")
       
       if (eventsRes.ok) {
         const eventsData = await eventsRes.json()
