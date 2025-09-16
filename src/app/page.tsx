@@ -23,9 +23,12 @@ export default function Home() {
               <p className="text-gray-600 mb-6">
                 Masuk untuk mengambil tiket acara kampus
               </p>
-              <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+              <a 
+                href="/auth/signin" 
+                className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors text-center"
+              >
                 Masuk sebagai Mahasiswa
-              </button>
+              </a>
             </div>
           </div>
           
@@ -40,9 +43,12 @@ export default function Home() {
               <p className="text-gray-600 mb-6">
                 Kelola acara dan validasi tiket
               </p>
-              <button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
+              <a 
+                href="/auth/signin" 
+                className="inline-block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors text-center"
+              >
                 Masuk sebagai Admin
-              </button>
+              </a>
             </div>
           </div>
         </div>
