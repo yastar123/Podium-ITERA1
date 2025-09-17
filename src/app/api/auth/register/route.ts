@@ -7,7 +7,7 @@ const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   name: z.string().min(2),
-  nim: z.string().optional()
+  nim: z.string().min(1) // NIM is required in Prisma schema
 })
 
 export async function POST(request: NextRequest) {

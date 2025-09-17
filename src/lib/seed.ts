@@ -14,6 +14,7 @@ async function main() {
       email: 'admin@ticketwar.com',
       name: 'Admin Ticket War',
       password: hashedAdminPassword,
+      nim: 'ADMIN001', // Admin NIM
       role: 'ADMIN',
     },
   })
@@ -44,7 +45,6 @@ async function main() {
       location: 'Auditorium Utama, Gedung A',
       eventDate: new Date('2025-10-01T10:00:00Z'),
       quota: 200,
-      batchSize: 200,
       isActive: true,
     },
   })
@@ -59,7 +59,6 @@ async function main() {
       location: 'Lab Komputer, Gedung B',
       eventDate: new Date('2025-10-15T14:00:00Z'),
       quota: 50,
-      batchSize: 50,
       isActive: true,
     },
   })
@@ -74,7 +73,6 @@ async function main() {
       location: 'Hall Utama Kampus',
       eventDate: new Date('2025-11-01T09:00:00Z'),
       quota: 500,
-      batchSize: 500,
       isActive: true,
     },
   })

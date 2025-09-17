@@ -22,6 +22,11 @@ interface Ticket {
   status: string
   issuedAt: string
   event: Event
+  user: {
+    name: string | null
+    email: string
+    nim: string
+  }
 }
 
 export default function StudentDashboard() {

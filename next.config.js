@@ -9,11 +9,12 @@ const nextConfig = {
   images: {
     domains: ['localhost'],
   },
+  output: 'standalone',
   // Allow all hosts for Replit environment
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/api/(.*)',
         headers: [
           {
             key: 'Cache-Control',

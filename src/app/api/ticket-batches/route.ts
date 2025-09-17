@@ -1,7 +1,7 @@
 // src/app/api/ticket-batches/route.ts
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { nanoid } from "nanoid" // Import nanoid for ID generation
 

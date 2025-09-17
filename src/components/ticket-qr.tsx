@@ -8,7 +8,7 @@ interface TicketQRProps {
     id: string
     ticketCode: string
     user: {
-      name: string
+      name: string | null
       email: string
       nim: string | null
     }
@@ -29,7 +29,7 @@ export default function TicketQR({ ticket, onClose }: TicketQRProps) {
     ticketCode: ticket.ticketCode,
     ticketId: ticket.id,
     eventName: ticket.event.name,
-    userName: ticket.user.name,
+    userName: ticket.user.name || ticket.user.email,
     timestamp: new Date().toISOString()
   })
 
