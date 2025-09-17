@@ -10,6 +10,9 @@ const nextConfig = {
     domains: ['localhost'],
   },
   // Allow all hosts for Replit environment
+  experimental: {
+    allowedDevOrigins: ['*'],
+  },
   async headers() {
     return [
       {
