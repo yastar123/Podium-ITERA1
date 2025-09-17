@@ -62,7 +62,22 @@ export async function POST(request: NextRequest) {
         throw new Error("You already have a ticket for this event")
       }
 
-      // Get current ticket count with lock
+      // Find any available ticket batch (tanpa filter eventId)
+      const availableBatch = await tx.ticket_batches.findFirst({
+        where: {
+          isActive: true,
+          startDate: { lte: new Date() },
+          endDate: { gte: new Date() },
+          available: { gt: 0 }
+        },
+        orderBy: { startDate: 'asc' }
+      })
+
+      if (!availableBatch) {
+        throw new Error("No available ticket batches at this time")
+      }
+
+      // Check event quota
       const currentEvent = await tx.event.findUnique({
         where: { id: eventId },
         include: {
@@ -76,7 +91,6 @@ export async function POST(request: NextRequest) {
         throw new Error("Event not found")
       }
 
-      // Check quota atomically
       if (currentEvent._count.tickets >= currentEvent.quota) {
         throw new Error("Sorry, this event is full")
       }
@@ -90,7 +104,8 @@ export async function POST(request: NextRequest) {
           ticketCode,
           userId: session.user.id,
           eventId: eventId,
-          status: "ACTIVE"
+          batchId: availableBatch.id,
+          status: "ACTIVE",
         },
         include: {
           event: true,
@@ -100,20 +115,19 @@ export async function POST(request: NextRequest) {
               email: true,
               nim: true
             }
-          }
+          },
+          ticket_batches: true
         }
+      })
+
+      // Update available count
+      await tx.ticket_batches.update({
+        where: { id: availableBatch.id },
+        data: { available: { decrement: 1 } }
       })
 
       return newTicket
     })
-
-    // Handle transaction errors
-    if (!ticket) {
-      return NextResponse.json(
-        { error: "Failed to create ticket" },
-        { status: 500 }
-      )
-    }
 
     return NextResponse.json({
       message: "Ticket claimed successfully!",
@@ -122,7 +136,6 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error("Error claiming ticket:", error)
     
-    // Handle Prisma unique constraint violation (P2002)
     if (error.code === "P2002") {
       return NextResponse.json(
         { error: "You already have a ticket for this event" },
@@ -130,7 +143,6 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Handle specific transaction errors
     if (error.message?.includes("already have a ticket")) {
       return NextResponse.json(
         { error: "You already have a ticket for this event" },
@@ -149,6 +161,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "Event not found" },
         { status: 404 }
+      )
+    }
+
+    if (error.message?.includes("No available ticket batches")) {
+      return NextResponse.json(
+        { error: "No available ticket batches at this time" },
+        { status: 400 }
       )
     }
 
