@@ -15,6 +15,15 @@ export const prisma =
 
 if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma
 
+// Initialize system on server startup
+if (typeof window === 'undefined') {
+  import('./startup').then(({ initializeSystem }) => {
+    initializeSystem().catch((error) => {
+      console.error('System initialization failed:', error)
+    })
+  })
+}
+
 // Test the connection
 prisma.$connect()
   .then(() => {
