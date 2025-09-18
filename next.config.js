@@ -10,7 +10,8 @@ const nextConfig = {
     domains: ['localhost'],
   },
   output: 'standalone',
-  // Allow all hosts for Replit environment
+  // Allow all hosts for Replit environment - critical for proxy iframe
+  allowedHosts: true,
   async headers() {
     return [
       {
