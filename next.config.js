@@ -10,8 +10,7 @@ const nextConfig = {
     domains: ['localhost'],
   },
   output: 'standalone',
-  // Allow cross-origin requests for Replit environment - critical for proxy iframe
-  allowedDevOrigins: ["*"],
+  // Cache control headers for Replit environment
   async headers() {
     return [
       {
