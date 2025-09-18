@@ -1,0 +1,104 @@
+Prompt untuk Replit AI - Implementasi Redis, Queue, dan Monitoring War Tiket
+Context
+Saya memiliki website MVP war tiket kampus yang sudah dibuat dengan NextJS + Supabase (PostgreSQL) + Prisma + TailwindCSS. Website ini untuk event dengan pemateri Rocky Gerung, total 500 tiket gratis, yang akan dibuka untuk mahasiswa ITERA. Sistem sudah memiliki login mahasiswa, generate tiket dengan barcode dan kode redeem, serta admin dashboard dengan CRUD event dan scan barcode.
+
+Task 1: Implementasi Redis untuk Caching dan Rate Limiting
+Requirements:
+Setup Redis Connection
+
+Gunakan Upstash Redis (free tier)
+Buat connection helper di /lib/redis.js
+Handle connection errors gracefully
+Rate Limiting Implementation
+
+Limit 3 attempts per user per menit untuk claim tiket
+Limit 10 requests per IP per menit untuk general API
+Buat middleware rate limiting yang bisa dipakai di API routes
+Return proper error messages dengan countdown timer
+Caching Strategy
+
+Cache jumlah tiket tersisa selama 5 detik
+Cache data event selama 10 menit
+Cache user session untuk mengurangi Supabase calls
+Implement cache invalidation saat ada perubahan data
+Code Structure Needed:
+// /lib/redis.js - Connection helper
+// /lib/rateLimit.js - Rate limiting middleware
+// /lib/cache.js - Caching utilities
+// /middleware.js - Apply rate limiting to routes
+// Update API routes untuk pakai caching
+
+Task 2: Simple Queue System dengan Supabase Edge Functions
+Requirements:
+Queue Table Setup
+
+Buat table ticket_queue dengan fields: id, user_id, event_id, status, created_at, processed_at
+Status: 'pending', 'processing', 'completed', 'failed'
+Queue Implementation
+
+API endpoint untuk add user ke queue saat claim tiket
+Supabase Edge Function untuk process queue secara batch
+Handle concurrent processing dengan proper locking
+Auto-retry failed jobs maksimal 3x
+Queue Processing Logic
+
+Process 10 requests per batch setiap 2 detik
+Update status dan notify user via real-time
+Cleanup completed jobs after 1 jam
+Real-time Updates
+
+Gunakan Supabase realtime untuk notify user posisi queue
+Show estimated waiting time
+Update UI saat tiket berhasil di-claim
+Task 3: Monitoring dan Analytics Setup
+Requirements:
+Performance Monitoring
+
+Track response time untuk setiap API endpoint
+Monitor database query performance
+Track Redis hit/miss ratio
+Log error rates dengan stack trace
+Business Metrics
+
+Real-time counter tiket tersisa
+Jumlah user aktif concurrent
+Rate of ticket claiming per menit
+Success/failure rate claim tiket
+Alert System
+
+Email/webhook alerts saat error rate > 10%
+Alert saat response time > 3 detik
+Alert saat remaining tickets < 50
+Alert saat concurrent users > 1000
+Dashboard Components
+
+Real-time metrics display di admin dashboard
+Grafik historical data (last 24 hours)
+System health indicators (green/yellow/red)
+Export logs untuk analysis
+
+Performance Targets:
+Response time API < 500ms (95th percentile)
+Cache hit ratio > 80%
+Handle 1000+ concurrent users
+Zero data loss saat high traffic
+Queue processing delay < 5 detik
+Implementation Notes:
+Prioritize data consistency over speed
+Implement graceful degradation jika Redis down
+Use database transactions untuk critical operations
+Add comprehensive error logging
+Implement circuit breaker pattern untuk external services
+Testing Requirements:
+Load test dengan Artillery.js untuk 500 concurrent users
+Test Redis failover scenario
+Test queue processing dengan high volume
+Verify monitoring alerts firing correctly
+Deliverables Expected:
+Working Redis implementation dengan rate limiting
+Queue system yang handle concurrent ticket claims
+Monitoring dashboard dengan real-time metrics
+Documentation untuk deployment dan maintenance
+Load testing results dan performance benchmarks
+
+Tolong implementasikan semua requirements ini step by step, dengan penjelasan setiap kode yang dibuat dan bagaimana cara testing functionality nya.
